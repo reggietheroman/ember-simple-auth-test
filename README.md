@@ -40,7 +40,7 @@ import {
   auth,
   GoogleAuthProvider,
   signInWithPopup,
-} from 'ember-simple-auth-test-2/utils/firebase';
+} from 'ember-simple-auth-test/utils/firebase';
 import { tracked } from '@glimmer/tracking';
 
 export default class FirebaseAuthenticator extends Base {
