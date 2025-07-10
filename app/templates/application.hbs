@@ -1,7 +1,17 @@
 {{page-title "EmberSimpleAuthTest"}}
 
-{{outlet}}
+{{#if this.session.isAuthenticated}}
+  <p>Welcome!</p>
+  <br>
+  <button type="button" {{on "click" this.logout}}>Logout</button>
+{{else}}
+  <p>Get Started</p>
+  <br>
+  <button type="button" {{on "click" this.login}}>Login with Google</button>
+{{/if}}
+
+{{!-- {{outlet}} --}}
 
 {{! The following component displays Ember's default welcome message. }}
-<WelcomePage />
+{{!-- <WelcomePage /> --}}
 {{! Feel free to remove this! }}
