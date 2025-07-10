@@ -1,17 +1,37 @@
 {{page-title "EmberSimpleAuthTest"}}
 
-{{#if this.session.isAuthenticated}}
-  <p>Welcome!</p>
-  <br>
-  <button type="button" {{on "click" this.logout}}>Logout</button>
-{{else}}
-  <p>Get Started</p>
-  <br>
-  <button type="button" {{on "click" this.login}}>Login with Google</button>
-{{/if}}
+<div style="display: flex; justify-content: space-between; background-color: #BBBBBB; padding: 1rem;">
+  <div style="width: 100%;">
+    {{#if this.session.isAuthenticated}}
+      <span>Welcome!</span>
+    {{else}}
+      <span>Get Started</span>
+    {{/if}}
+  </div>
+  <div style="display: flex; justify-content: end; width: 100%;">
+    <div style="padding: 0 1rem; border-right: solid 1px black;">
+      <LinkTo @route="protected">
+        Protected-only Page
+      </LinkTo>
+    </div>
+    <div style="padding: 0 1rem; border-right: solid 1px black;">
+      <LinkTo @route="public">
+        Public-only Page
+      </LinkTo>
+    </div>
+    <div style="padding: 0 1rem; border-right: solid 1px black;">
+      <LinkTo @route="public-any">
+        Public-any Page
+      </LinkTo>
+    </div>
+    <div style="margin-left: 1rem;">
+      {{#if this.session.isAuthenticated}}
+        <button type="button" {{on "click" this.logout}}>Logout</button>
+      {{else}}
+        <button type="button" {{on "click" this.login}}>Login with Google</button>
+      {{/if}}
+    </div>
+  </div>
+</div>
 
-{{!-- {{outlet}} --}}
-
-{{! The following component displays Ember's default welcome message. }}
-{{!-- <WelcomePage /> --}}
-{{! Feel free to remove this! }}
+{{outlet}}

@@ -7,19 +7,23 @@ This test was done using ember-simple-auth [version 8.0.0](https://github.com/ma
 ## Steps to setup from scratch
 
 ### 1. Install ember-simple-auth
-```cli
-ember install ember-simple-auth
+```
+$ ember install ember-simple-auth
 ```
 
 ### 2. Create a session service
-```app/services/session.js
+```
+// app/services/session.js
+
 import Service from 'ember-simple-auth/services/session';
 
 export default class SessionService extends Service {}
 ```
 
 ### 3. Create a session store
-```app/session-stores/application.js
+```
+// app/session-stores/application.js
+
 import AdaptiveStore from 'ember-simple-auth/session-stores/adaptive';
 
 export default class SessionStore extends AdaptiveStore {}
@@ -28,7 +32,9 @@ export default class SessionStore extends AdaptiveStore {}
 ### 4. IF not using any of the available authenticators, CREATE A CUSTOM AUTHENTICATOR. This should go in `app/authenticators`. 
 
 ### 5. In this test, I used firebase so this file is firebase specific.
-```app/authenticators/firebase.js
+```
+// app/authenticators/firebase.js
+
 import Base from 'ember-simple-auth/authenticators/base';
 import {
   auth,
@@ -80,7 +86,9 @@ export default class FirebaseAuthenticator extends Base {
 
 ### 6. Firebase utility file to load up and configure firebase in the app. Create an `app/utils` directory for this.
 *You can skip this if you did NOT create a custom authenticator for Google firebase.*
-```app/utils/firebase.js
+```
+// app/utils/firebase.js
+
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
@@ -101,7 +109,9 @@ export { auth, GoogleAuthProvider, signInWithPopup };
 ### 8. In the the routes/application file, create an implementation of the routes `[beforeModel](https://api.emberjs.com/ember/6.5/classes/Route/methods/beforeModel?anchor=beforeModel)` method.
 
 ### 9. In the `beforeModel()` method, import the session service and await the [session.setup](https://ember-simple-auth.com/api/SessionService.html#.setup) method.
-```app/routes/application.js
+```
+// app/routes/application.js
+
 import { service } from '@ember/service';
 import Route from '@ember/routing/route';
 
@@ -116,7 +126,9 @@ export default class ApplicationRoute extends Route {
 ### 10. IF file not found, create a `app/controllers/application` file (app/controllers/application.js or app/controllers/application.ts)
 
 ### 11. Create actions for login and logout using the firebase authenticator created earlier (or your custom authenticator)
-```app/controllers/application.js
+```
+// app/controllers/application.js
+
 import Controller from '@ember/controller';
 
 export default class ApplicationController extends Controller {
@@ -141,12 +153,61 @@ export default class ApplicationController extends Controller {
 ### 12. Update the `app/templates/application.hbs` file by adding a conditional that shows either a log in button or a log out button button depending on whether the session is authenticated or not.
 
 ### 13. You should now be able to run using `ember s` or `npm start`
-```cli
+```
 $ ember s
 ```
 or
-```cli
+```
 $ npm start
 ```
 
 ### 14. Test the app by opening your browser and going to [http://localhost:4200](http://localhost:4200)
+
+## Additional Feature Examples
+
+### Pages that require the user is Authenticated
+The example for this is the `protected` route.
+
+```
+// app/routes/protected.js
+
+import Route from '@ember/routing/route';
+import { service } from '@ember/service';
+
+export default class ProtectedRoute extends Route {
+  @service session;
+
+  beforeModel(transition) {
+    this.session.requireAuthentication(transition, 'login');
+  }
+}
+```
+
+### Pages that require the user is not Authenticated
+The example for this is the `public` route.
+
+```
+// app/routes/public.js
+
+import Route from '@ember/routing/route';
+import { service } from '@ember/service';
+
+export default class PublicRoute extends Route {
+  @service session;
+
+  beforeModel() {
+    this.session.prohibitAuthentication('protected');
+  }
+}
+```
+
+### Pages that do not care either way
+The example for this is the `public-any` route.
+
+```
+// app/routes/public-any.js
+
+import Route from '@ember/routing/route';
+
+export default class PublicAnyRoute extends Route {}
+```
